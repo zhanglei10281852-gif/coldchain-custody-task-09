@@ -167,7 +167,7 @@ func (q *queries) InsertHandoff(ctx context.Context, handoff domain.CustodyHando
 	if err := handoff.Validate(); err != nil {
 		return err
 	}
-	_, err := q.q.ExecContext(ctx, `INSERT OR REPLACE INTO custody_handoffs(id, shipment_id, from_custodian, to_custodian,
+	_, err := q.q.ExecContext(ctx, `INSERT INTO custody_handoffs(id, shipment_id, from_custodian, to_custodian,
         location, status, expires_at, resolved_at, resolution_note, version, created_at, updated_at)
         VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, handoff.ID, handoff.ShipmentID, handoff.FromCustodian,
 		handoff.ToCustodian, handoff.Location, handoff.Status, formatTime(handoff.ExpiresAt), nullableTime(handoff.ResolvedAt),

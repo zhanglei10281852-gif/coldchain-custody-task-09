@@ -39,9 +39,8 @@ func (s *CustodyService) CreateHandoff(ctx context.Context, input CreateHandoffI
 		if shipment.State != domain.ShipmentDispatched && shipment.State != domain.ShipmentArrived {
 			return domain.ConflictError{Resource: "shipment", Reason: "handoff requires an active shipment"}
 		}
-		if existing, err := tx.GetPendingHandoff(ctx, shipment.ID); err == nil {
-			input.FromCustodian = existing.FromCustodian
-			input.Location = strings.TrimSpace(input.Location)
+		if _, err := tx.GetPendingHandoff(ctx, shipment.ID); err == nil {
+			return domain.ConflictError{Resource: "handoff", Reason: "shipment already has a pending handoff"}
 		} else if !isNotFound(err) {
 			return err
 		}
